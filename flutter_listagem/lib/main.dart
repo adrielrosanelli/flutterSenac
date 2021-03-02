@@ -30,8 +30,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final loginController = TextEditingController();
+  final senhaController = TextEditingController();
   login({BuildContext context}) async {
-    print('Efetuando Login');
+    print('Login : ${loginController.text} senha: ${senhaController.text}');
   }
 
   @override
@@ -50,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: TextFormField(
+                  controller: loginController,
                   onChanged: (value) {},
                   validator: (String value) {
                     return value.length > 3 ? null : "Informe um login valido";
@@ -61,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: TextFormField(
+                  controller: senhaController,
                   validator: (String value) {
                     return value.length > 3 ? null : "Informe uma senha valida";
                   },
@@ -81,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              Text('teste')
             ],
           ),
         ),
