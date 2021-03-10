@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:introducao_get_flutter/pages/contato.dart';
+import 'package:introducao_get_flutter/utils/messages.dart';
 
 void main() {
   runApp(GetMaterialApp(
+    translations: Messages(),
+    locale: Get.deviceLocale,
+    fallbackLocale: Locale('en', 'pt_BR'),
     debugShowCheckedModeBanner: false,
     initialRoute: '/',
     defaultTransition: Transition.fade,
@@ -16,7 +20,14 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('teste'),
+        title: Text('Apptitle'.tr),
+        actions: [
+          IconButton(
+            onPressed: () => Get.changeTheme(
+                Get.isDarkMode ? ThemeData.light() : ThemeData.dark()) ,
+            icon: Icon(Icons.brightness_4),
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -34,7 +45,7 @@ class Home extends StatelessWidget {
             child: Text('Snackbar'),
           ),
           FlatButton(
-            child: Icon(Icons.ac_unit_outlined),
+            child: Text('title'.tr),
             onPressed: () {
               Get.defaultDialog(
                   confirm: IconButton(
