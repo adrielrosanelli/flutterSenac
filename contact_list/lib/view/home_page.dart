@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:contactlist/controller/contact_controller.dart';
+import 'package:contactlist/database/database_fetch.dart';
 import 'package:contactlist/view/add_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -37,21 +40,29 @@ class HomePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(_contactController.contactModel[index].nome),
-                              Text(
-                                _contactController
-                                    .contactModel[index].descricao,
-                                style: TextStyle(fontSize: 10.0),
-                              ),
+                              _contactController.contactModel[index].foto !=
+                                      null
+                                  ? Image.file(File(_contactController
+                                      .contactModel[index].foto))
+                                  : Container(),
                             ],
+                          ),
+                          title:
+                              Text(_contactController.contactModel[index].nome),
+                          subtitle: Text(
+                            _contactController.contactModel[index].descricao,
                           ),
                           trailing: IconButton(
                               icon: Icon(
                                 Icons.delete,
                                 color: Colors.red,
                               ),
-                              onPressed: () => _contactController.deleteContact(
-                                  _contactController.contactModel[index].id)),
+                              onPressed: () {
+                                _contactController.deleteContact(
+                                    id: _contactController
+                                        .contactModel[index].id,
+                                    foto: _contactController.image.value);
+                              }),
                         ),
                       ),
                     )),
@@ -61,4 +72,15 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
+
+deleteContact(int id) {
+  Get.defaultDialog(
+      title: 'Deletar',
+      content: Text('Deseja deletar o contato'),
+      textConfirm: "Apagar",
+      textCancel: "Cancelar",
+      onConfirm: () async {
+        await DatabaseHelper.instance.delete(id);
+      });
 }

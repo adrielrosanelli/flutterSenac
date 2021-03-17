@@ -11,6 +11,12 @@ class DatabaseHelper {
   static final columnId = 'id';
   static final columnNome = 'nome';
   static final columnDescricao = 'descricao';
+  static final columnFoto = 'foto';
+  static final columnEmail = 'email';
+  static final columnSite = 'site';
+  static final columnLongetude = 'longetude';
+  static final columnLatitude = 'latitude';
+  static final columnTelefone = 'telefone';
 
   //"Executa" a classe
   DatabaseHelper._privateConstructor();
@@ -39,8 +45,14 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE $table (
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-            $columnNome FLOAT NOT NULL,
-            $columnDescricao FLOAT NOT NULL
+            $columnNome TEXT NOT NULL,
+            $columnDescricao TEXT NOT NULL,
+            $columnFoto TEXT NOT NULL,
+            $columnEmail TEXT NOT NULL,
+            $columnSite TEXT NOT NULL,
+            $columnLongetude TEXT,
+            $columnLatitude TEXT,
+            $columnTelefone TEXT NOT NULL,
           )
           ''');
   }
