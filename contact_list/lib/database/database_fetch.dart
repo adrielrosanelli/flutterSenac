@@ -14,9 +14,9 @@ class DatabaseHelper {
   static final columnFoto = 'foto';
   static final columnEmail = 'email';
   static final columnSite = 'site';
-  static final columnLongetude = 'longetude';
-  static final columnLatitude = 'latitude';
   static final columnTelefone = 'telefone';
+  static final columnLatitude = 'latitude';
+  static final columnLongitude = 'longitude';
 
   //"Executa" a classe
   DatabaseHelper._privateConstructor();
@@ -47,12 +47,12 @@ class DatabaseHelper {
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
             $columnNome TEXT NOT NULL,
             $columnDescricao TEXT NOT NULL,
-            $columnFoto TEXT NOT NULL,
+            $columnFoto TEXT,
             $columnEmail TEXT NOT NULL,
             $columnSite TEXT NOT NULL,
-            $columnLongetude TEXT,
-            $columnLatitude TEXT,
             $columnTelefone TEXT NOT NULL,
+            $columnLatitude TEXT,
+            $columnLongitude TEXT
           )
           ''');
   }

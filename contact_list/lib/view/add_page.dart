@@ -8,121 +8,140 @@ class AddPage extends StatelessWidget {
   //injeta o controllador ContactController na classe AddPage
   //deixando-o acessível na variável _contactController
   final ContactController _contactController = Get.put(ContactController());
-
   @override
   Widget build(BuildContext context) {
+    //limpa a variável imagem, caso o usuário tenha tirado uma foto e voltado para a lista sem salvar, ao retornar na tela de cadastro a imagem deve ser vazia
     _contactController.image.value = '';
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: new AppBar(title: Text("Adicionar contato")),
+      appBar: new AppBar(title: Text("Add contact to list")),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             //acessa o controlador ContactController e executa a função
             //addData()
-            _contactController.addData();
+            if (_contactController.image.isEmpty) {
+              Get.defaultDialog(
+                  titleStyle: TextStyle(color: Colors.white),
+                  title: 'Imagem Obrigatória',
+                  content: Text(
+                    'A foto do contato é obrigatória',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.red[200]);
+            } else {
+              _contactController.addData();
+            }
           },
           child: Icon(Icons.save)),
-      body: Container(
-        alignment: Alignment.topLeft,
-        padding: EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _contactController.formKey,
+      body: SingleChildScrollView(
+        child: Form(
+          key: _contactController.form,
+          child: Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.all(16),
             child: Column(
               children: <Widget>[
                 TextFormField(
-                  controller: _contactController.nomeContactController,
-                  decoration: InputDecoration(hintText: "Digite o nome"),
                   textInputAction: TextInputAction.next,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  // ignore: missing_return
+                  controller: _contactController.nomeContactController,
+                  decoration: InputDecoration(hintText: "Enter your name"),
+                  autofocus: true,
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Campo Obrigatorio';
-                    } else {
-                      return null;
+                      return "Required field";
                     }
+                    return null;
                   },
                 ),
                 TextFormField(
-                  controller: _contactController.emailContactController,
-                  decoration: InputDecoration(hintText: "Digite o Email"),
                   textInputAction: TextInputAction.next,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  // ignore: missing_return
+                  controller: _contactController.descricaoContactController,
+                  decoration: InputDecoration(
+                      hintText: "Enter your personal description"),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Campo Obrigatorio';
-                    } else {
+                      return "Required field";
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  controller: _contactController.emailContactController,
+                  decoration: InputDecoration(hintText: "Enter your e-mail"),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value.isNotEmpty) {
                       return (!GetUtils.isEmail(value))
-                          ? "Email não é valido"
+                          ? "Email is not valid"
                           : null;
                     }
+                    return null;
                   },
                 ),
                 TextFormField(
                   controller: _contactController.siteContactController,
-                  decoration: InputDecoration(hintText: "Digite o Link"),
+                  decoration:
+                      InputDecoration(hintText: "Enter your internet link"),
                   keyboardType: TextInputType.url,
+                  //ao clicar no Enter do teclado, vai para o próximo campo
                   textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Campo Obrigatorio';
-                    } else {
+                    if (value.isNotEmpty) {
                       return (!GetUtils.isURL(value))
-                          ? "Link não é valido"
+                          ? "Link is not valid"
                           : null;
                     }
+                    return null;
                   },
                 ),
                 TextFormField(
                   controller: _contactController.telefoneContactController,
-                  decoration: InputDecoration(hintText: "Digite o telefone"),
+                  decoration:
+                      InputDecoration(hintText: "Enter your cell phone"),
                   keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
+                  //ao clicar no Enter do teclado, fecha o teclado.
+                  textInputAction: TextInputAction.done,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Campo Obrigatorio';
-                    } else {
+                    if (value.isNotEmpty) {
                       return (!GetUtils.isPhoneNumber(value))
-                          ? "Link não é valido"
+                          ? "Phone is not valid"
                           : null;
                     }
+                    return null;
                   },
                 ),
-                TextFormField(
-                    controller: _contactController.descricaoContactController,
-                    decoration: InputDecoration(hintText: "Digite a descrição"),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    // ignore: missing_return
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Campo Obrigatorio';
-                      }
-                    },
-                    textInputAction: TextInputAction.done),
                 Obx(
-                  () => _contactController.image.value != ''
+                  //cria o observável do Getx para exibir a imagem tirada na câmera na tela.(atualiza automaticamente baseado nas variáveis .obs)
+                  () => _contactController.image.value !=
+                          "" //se existir um caminho de imagem, exibe a imagem na tela
                       ? Column(
                           children: [
-                            Image.file(File(_contactController.image.value)),
                             TextButton(
-                                onPressed: () => _contactController.getImage(),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.image),
-                                    Text('Alterar Foto')
-                                  ],
-                                )),
+                              onPressed: () => _contactController.getImage(),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.image),
+                                  Text('Update a picture')
+                                ],
+                              ),
+                            ),
+                            //exibe a imagem na tela a partir da contrução de um arquivo baseando-se no caminho dele
+                            Image.file(File(_contactController.image.value))
                           ],
                         )
                       : TextButton(
+                          //aciona a função de abertura da câmera
                           onPressed: () => _contactController.getImage(),
                           child: Row(
-                            children: [Icon(Icons.image), Text('Tirar Foto')],
-                          )),
-                )
+                            children: [
+                              Icon(Icons.image),
+                              Text('Take a picture')
+                            ],
+                          ),
+                        ),
+                ),
               ],
             ),
           ),

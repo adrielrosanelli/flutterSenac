@@ -9,25 +9,32 @@ import 'package:image_picker/image_picker.dart';
 class ContactController extends GetxController {
   //ContactModel é uma lista observável, quando sofrer atualizações
   //ela mesma comunica os compomentes que estão utilizando
-  var contactModel = <ContactModel>[]
+  var contactModel = []
       .obs; //.obs é responsável por informar ao Getx que a variável é observável e toda vez que ele sofrer alterações, deve ser comunicado os componentes que estão dentro do Obx()
   //declaração dos controladores de textos do formulário
   TextEditingController nomeContactController = TextEditingController();
   TextEditingController descricaoContactController = TextEditingController();
   TextEditingController emailContactController = TextEditingController();
-  TextEditingController siteContactController = TextEditingController();
-  TextEditingController longetudeContactController = TextEditingController();
-  TextEditingController latitudeContactController = TextEditingController();
   TextEditingController telefoneContactController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+  TextEditingController latitudeContactController = TextEditingController();
+  TextEditingController longitudeContactController = TextEditingController();
+  TextEditingController siteContactController = TextEditingController();
 
-  var image = ''.obs;
-  final picker = ImagePicker();
+  GlobalKey<FormState> form = GlobalKey<FormState>();
+
+  var image = ''
+      .obs; //criado uma variável observável para armazenar o caminho da foto no celular e notificar a view para apresentar em tela
+  final picker = ImagePicker(); //instancia o plugin de captura de imagem
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile =
+        await picker.getImage(source: ImageSource.camera); //abre a câmera
     if (pickedFile != null) {
-      image.value = pickedFile.path;
+      image.value = pickedFile
+          .path; //se o usuário tirou a foto e confirmou, armazena o caminho da foto na variável imagem
+    } else {
+      Get.snackbar('Aviso',
+          'Imagem não selecionada'); //se não confirmou a imagem, exibe um snackbar
     }
   }
 
@@ -44,17 +51,22 @@ class ContactController extends GetxController {
       //percorre os registros inserindo na lista atual que é
       //exibida para o usuário
       value.forEach((element) {
-        contactModel.add(ContactModel(
+        contactModel.add(
+          ContactModel(
             id: element['id'],
             nome: element['nome'],
-            descricao: element['descricao']));
+            descricao: element['descricao'],
+            foto: element['foto'],
+          ),
+        );
       });
     });
   }
 
   void addData() async {
-    if (formKey.currentState.validate()) {
-      int lastId = await DatabaseHelper.instance.insert(ContactModel(
+    if (form.currentState.validate()) {
+      //grava na base de dados
+      var lastId = await DatabaseHelper.instance.insert(ContactModel(
         nome: nomeContactController.text,
         descricao: descricaoContactController.text,
         site: siteContactController.text,
@@ -67,47 +79,48 @@ class ContactController extends GetxController {
       contactModel.insert(
           0,
           ContactModel(
-            id: lastId,
-            nome: nomeContactController.text,
-            descricao: descricaoContactController.text,
-            site: siteContactController.text,
-            telefone: telefoneContactController.text,
-            email: emailContactController.text,
-            foto: image.value,
-          ));
+              id: lastId,
+              nome: nomeContactController.text,
+              descricao: descricaoContactController.text,
+              site: siteContactController.text,
+              telefone: telefoneContactController.text,
+              email: emailContactController.text,
+              foto: image.value));
       //limpa os campos do formulário
       nomeContactController.clear();
       descricaoContactController.clear();
-      siteContactController.clear();
-      telefoneContactController.clear();
       emailContactController.clear();
+      telefoneContactController.clear();
+      siteContactController.clear();
       image.value = '';
       //fecha o formulário de cadastro
       Get.back();
-    } else {
-      Get.snackbar('Tente Novamente',
-          'Algum Campo deve Estar Vazio ou não condiz com o seu valor',
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.white);
     }
-    //grava na base de dados
   }
 
-  void deleteContact({int id, String foto}) async {
+  //recebe como parâmetro o id do registro no db e o caminho da foto, assim não precisa buscar o registro para resgatar o caminho da foto:
+  void deleteContact(int id, String foto) {
+    //adiciona a confirmação no ato de exclsuão
     Get.defaultDialog(
-        title: 'Deletar',
-        content: Text('Deseja deletar o contato'),
-        textConfirm: "Apagar",
-        textCancel: "Cancelar",
-        onConfirm: () async {
-          await DatabaseHelper.instance.delete(id);
-          contactModel.removeWhere((element) => element.id == id);
-          await File(foto).delete();
-          Get.back();
-        },
-        onCancel: () => Get.back());
-    //apaga do banco de dados o registro
-    // await DatabaseHelper.instance.delete(id);
-    //remove os dados na lista atual que é exibida em tela
-    //evitando o reload da tabela
+      radius: 10,
+      barrierDismissible:
+          false, //somente deixa fechar o pop-pup clicando nos botões de ação
+      textConfirm: "Apagar",
+      textCancel: "Cancelar",
+      title: 'Confirma?',
+      content: Text('Deseja realmente apagar'),
+      onConfirm: () async {
+        //adiciona automaticamente o botão OK
+        //apaga do banco de dados o registro
+        await DatabaseHelper.instance.delete(id);
+        //remove os dados na lista atual que é exibida em tela
+        //evitando o reload da tabela
+        contactModel.removeWhere((element) => element.id == id);
+        await File(foto).delete(); //deleta o arquivo recebido por parâmetro
+        Get.back(); //fecha o pop-up
+      },
+      onCancel: () => Get
+          .back(), //adiciona automaticamente o botão Cancelar, e ao clicar fecha o pop-up
+    );
   }
 }
