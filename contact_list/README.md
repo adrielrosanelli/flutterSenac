@@ -15,7 +15,7 @@ Projeto desenvolvido com os alunos do curso de programação para internet do SE
     - [x] Adicionar um telefone ao contato;
     - [x] Ao entrar na tela o primeiro campo deve receber o foco;
     - [x] Cada campo deve permitir inserção de dados apenas do seu tipo;
-    - [ ] Obrigar o usuário a tirar uma foto;
+    - [x] Obrigar o usuário a tirar uma foto;
 - Atualizar a lista de contatos:
     - [x] Exibir a foto na listagem(leading,title,subtitle);
     - [ ] Remover o botão excluir da Lista;
