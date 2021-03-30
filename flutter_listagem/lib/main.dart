@@ -39,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final senhaController = TextEditingController();
   login({BuildContext context}) async {
     Usuario usuario = Usuario(
+        id: null,
         nome: loginController.text,
         senha: senhaController.text,
         login: loginController.text);

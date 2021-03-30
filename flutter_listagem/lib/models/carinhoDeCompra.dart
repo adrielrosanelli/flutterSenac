@@ -4,25 +4,21 @@ class CarrinhoDeCompras {
   int id;
   String nome;
   String data;
-  bool status;
-  String codigoDeBarras;
-  CarrinhoDeCompras(
-      {this.id, this.nome, this.data, this.status, this.codigoDeBarras});
+  int codigoDoUsuario;
+  CarrinhoDeCompras({this.id, this.nome, this.data, this.codigoDoUsuario});
 
   factory CarrinhoDeCompras.fromMap(Map<String, dynamic> json) =>
       new CarrinhoDeCompras(
           id: json['id'],
           nome: json['nome'],
           data: json['data'],
-          status: json['status'],
-          codigoDeBarras: json['codigoDeBarras']);
+          codigoDoUsuario: json['codigoDoUsuario']);
 
   Map<String, dynamic> toMap() => {
         'id': id,
         'tx_nome': nome,
         "tx_data": data,
-        'tx_status': status,
-        'tx_codigoDeBarras': codigoDeBarras,
+        'int_codigoDoUsuario': codigoDoUsuario,
       };
   CarrinhoDeCompras clientFromJson(String value) {
     final jsonData = json.decode(value);

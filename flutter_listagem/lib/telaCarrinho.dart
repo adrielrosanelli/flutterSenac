@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'models/carinhoDeCompra.dart';
+
 class TelaCarrinho extends StatefulWidget {
+  final String nome;
+  final int id;
+  final List<CarrinhoDeCompras> carrinho;
+
+  const TelaCarrinho({Key key, this.nome, this.id, this.carrinho})
+      : super(key: key);
+
   @override
   _TelaCarrinhoState createState() => _TelaCarrinhoState();
 }
