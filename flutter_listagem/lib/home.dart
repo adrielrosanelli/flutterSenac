@@ -34,8 +34,9 @@ class Home extends StatelessWidget {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => TelaCarrinho(
-                    nome: _nomeController.text,
+              builder: (context) => Home(
+                    login: login,
+                    // nome: _nomeController.text,
                     carrinho: carrinhoSalvo,
                   )));
     } else {
@@ -67,10 +68,13 @@ class Home extends StatelessWidget {
                     itemCount: snapshot.data.length,
                     itemBuilder: (x, int position) {
                       final item = snapshot.data[position];
-                      return Card(
-                          child: ListTile(
-                        title: Text('Compra' + item.login),
-                      ));
+                      return GestureDetector(
+                        onDoubleTap: () => abrirEditar(BuildContext(), item),
+                        child: Card(
+                            child: ListTile(
+                          title: Text('Compra' + item.nome),
+                        )),
+                      );
                     })
                 : Center(
                     child: CircularProgressIndicator(),

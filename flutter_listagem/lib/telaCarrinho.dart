@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_listagem/service/DBProvider.dart';
 
 import 'models/carinhoDeCompra.dart';
 
@@ -19,10 +20,24 @@ class _TelaCarrinhoState extends State<TelaCarrinho> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Container(
-        child: Column(
-          children: [],
-        ),
+      body: FutureBuilder<List>(
+        future: DBProvider.db.getAllCarrinho(),
+        initialData: [],
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (x, int position) {
+                    final item = snapshot.data[position];
+                    return Card(
+                        child: ListTile(
+                      title: Text('Compra' + item.login),
+                    ));
+                  })
+              : Center(
+                  child: CircularProgressIndicator(),
+                );
+        },
       ),
     );
   }
