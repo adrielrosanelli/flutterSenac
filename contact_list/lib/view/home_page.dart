@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:contactlist/controller/contact_controller.dart';
-import 'package:contactlist/database/database_fetch.dart';
 import 'package:contactlist/view/add_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,8 +24,8 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Expanded(
-              //cria um ListView observável pelo Get
+            Flexible(
+              // cria um ListView observável pelo Get
               //Obx() é o responsável por atualizar o listView
               //toda vez que ouver uma mudança nas variáveis observáveis
               //no caso:  var ContactModel = List<ContactModel>().obs;
@@ -36,17 +35,14 @@ class HomePage extends StatelessWidget {
                       itemCount: _contactController.contactModel.length,
                       itemBuilder: (context, index) => Card(
                         child: ListTile(
-                          leading: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _contactController.contactModel[index].foto !=
-                                      null
-                                  ? Image.file(File(_contactController
-                                      .contactModel[index].foto))
-                                  : Container(),
-                            ],
-                          ),
+                          leading: Expanded(
+                              flex: 1,
+                              child: //exibe a imagem, se existir
+                                  _contactController.contactModel[index].foto !=
+                                          null
+                                      ? Image.file(File(_contactController
+                                          .contactModel[index].foto))
+                                      : Container()),
                           title:
                               Text(_contactController.contactModel[index].nome),
                           subtitle: Text(
@@ -57,12 +53,10 @@ class HomePage extends StatelessWidget {
                                 Icons.delete,
                                 color: Colors.red,
                               ),
-                              onPressed: () {
-                                _contactController.deleteContact(
-                                    id: _contactController
-                                        .contactModel[index].id,
-                                    foto: _contactController.image.value);
-                              }),
+                              onPressed: () => _contactController.deleteContact(
+                                  _contactController.contactModel[index].id,
+                                  _contactController.contactModel[index]
+                                      .foto)), //passando os dois parâmetros para a função de exclusão
                         ),
                       ),
                     )),
@@ -72,15 +66,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-deleteContact(int id) {
-  Get.defaultDialog(
-      title: 'Deletar',
-      content: Text('Deseja deletar o contato'),
-      textConfirm: "Apagar",
-      textCancel: "Cancelar",
-      onConfirm: () async {
-        await DatabaseHelper.instance.delete(id);
-      });
 }

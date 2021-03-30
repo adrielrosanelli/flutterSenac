@@ -7,19 +7,19 @@ class ContactModel {
   String site;
   String telefone;
   String latitude;
-  String longetude;
+  String longitude;
 
   //"Executa" a classe recebendo os parâmetros
   ContactModel(
       {this.id,
       this.nome,
       this.descricao,
-      this.email,
       this.foto,
+      this.email,
       this.site,
+      this.telefone,
       this.latitude,
-      this.longetude,
-      this.telefone});
+      this.longitude});
 
   //cria o mapa de dados da classe
   Map<String, dynamic> toMap() {
@@ -27,12 +27,12 @@ class ContactModel {
       'id': id,
       'nome': nome,
       'descricao': descricao,
-      'email': email,
       'foto': foto,
+      'email': email,
       'site': site,
-      'longetude': longetude,
+      'telefone': telefone,
       'latitude': latitude,
-      'telefone': telefone
+      'longitude': longitude,
     };
   }
 }

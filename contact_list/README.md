@@ -7,16 +7,17 @@ Projeto desenvolvido com os alunos do curso de programação para internet do SE
 
 - [x] Apresentação das tecnologias envolvidas e criação das demandas iniciais com estrutura MVC;
 - Atualizar o formulário de cadastro:    
-    - [X] Adicionar validação do formulário;
-    - [ ] Adicionar uma foto ao contato;
+    - [x] Adicionar validação do formulário;
+    - [x] Adicionar uma foto ao contato;
     - [ ] Adicionar latitude e longitude ao contato;
-    - [ ] Adicionar um link de página web ao contato;
-    - [X] Adicionar um email ao contato;
-    - [ ] Adicionar um telefone ao contato;
-    - [ ] Ao entrar na tela o primeiro campo deve receber o foco;
-    - [ ] Cada campo deve permitir inserção de dados apenas do seu tipo;
+    - [x] Adicionar um link de página web ao contato;
+    - [x] Adicionar um email ao contato;
+    - [x] Adicionar um telefone ao contato;
+    - [x] Ao entrar na tela o primeiro campo deve receber o foco;
+    - [x] Cada campo deve permitir inserção de dados apenas do seu tipo;
+    - [x] Obrigar o usuário a tirar uma foto;
 - Atualizar a lista de contatos:
-    - [ ] Exibir a foto na listagem;
+    - [x] Exibir a foto na listagem(leading,title,subtitle);
     - [ ] Remover o botão excluir da Lista;
     - [ ] Adicionar menu inferior ao clicar no contato;               
         - [ ] Utilizar ícones do FontAwesome;
@@ -27,9 +28,11 @@ Projeto desenvolvido com os alunos do curso de programação para internet do SE
         - [ ] Abrir o telefone no discador;
         - [ ] Abrir o e-mail em um aplicativo de e-mail para escrever uma nova mensagem;
         - [ ] Permitir excluir o contato;
-            - [ ] Adicionar confirmação de exclusão;
+            - [x] Adicionar confirmação de exclusão;
+            - [x] Remover a foto do dispositivo;
         - [ ] Adicionar opção de visualização completa do contato:
             - [ ] Exibir todos os dados, foto e QRCode do tipo VCard;
+        - [ ] Exibir opção de ver no mapa a localização do contato(se disponível);
 - [ ] Adicionar opção no AppBar de leitura de QRCode do tipo VCard e importação do contato para a base de dados;
 - [ ] Adicionar pelo menos dois idiomas ao app;
 - [ ] Adicionar Splash Screen personalizado ao app;
@@ -38,7 +41,7 @@ Projeto desenvolvido com os alunos do curso de programação para internet do SE
 - [ ] Modificar o título do aplicativo;
 
 **Corrigir bugs**
-- [ ] Ao adicionar um contato e apagar ele na sequência não é removido da base de dados, apenas da tela;
+- [x] Ao adicionar um contato e apagar ele na sequência não é removido da base de dados, apenas da tela;
   
 
 **Pacotes utilizados no projeto:**
