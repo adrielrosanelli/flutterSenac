@@ -5,10 +5,10 @@ import 'models/carinhoDeCompra.dart';
 
 class TelaCarrinho extends StatefulWidget {
   final String nome;
+  final String data;
   final int id;
-  final List<CarrinhoDeCompras> carrinho;
 
-  const TelaCarrinho({Key key, this.nome, this.id, this.carrinho})
+  const TelaCarrinho({Key key, this.nome, this.data, this.id})
       : super(key: key);
 
   @override
@@ -17,28 +17,34 @@ class TelaCarrinho extends StatefulWidget {
 
 class _TelaCarrinhoState extends State<TelaCarrinho> {
   @override
+  void initState() {
+    print(widget.nome);
+    print(widget.data);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    TextEditingController _nomeController = TextEditingController();
+    TextEditingController _dataController = TextEditingController();
+    _nomeController.text = widget.nome;
+    _dataController.text = widget.data;
+
     return Scaffold(
-      appBar: AppBar(),
-      body: FutureBuilder<List>(
-        future: DBProvider.db.getAllCarrinho(),
-        initialData: [],
-        builder: (context, snapshot) {
-          return snapshot.hasData
-              ? ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (x, int position) {
-                    final item = snapshot.data[position];
-                    return Card(
-                        child: ListTile(
-                      title: Text('Compra' + item.login),
-                    ));
-                  })
-              : Center(
-                  child: CircularProgressIndicator(),
-                );
-        },
+      appBar: AppBar(
+        actions: [IconButton(icon: Icon(Icons.edit), onPressed: () {})],
       ),
+      body: Center(
+          child: Column(
+        children: [
+          TextFormField(
+            controller: _nomeController,
+          ),
+          TextFormField(
+            controller: _dataController,
+          )
+        ],
+      )),
     );
   }
 }

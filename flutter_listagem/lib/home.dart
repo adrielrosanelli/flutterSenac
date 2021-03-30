@@ -47,6 +47,16 @@ class Home extends StatelessWidget {
     }
   }
 
+  abrirEditar(context, item) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                TelaCarrinho(nome: item.nome, data: item.data, id: item.id
+                    // nome: _nomeController.text,
+                    )));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +79,7 @@ class Home extends StatelessWidget {
                     itemBuilder: (x, int position) {
                       final item = snapshot.data[position];
                       return GestureDetector(
-                        onDoubleTap: () => abrirEditar(BuildContext(), item),
+                        onDoubleTap: () => abrirEditar(context, item),
                         child: Card(
                             child: ListTile(
                           title: Text('Compra' + item.nome),
