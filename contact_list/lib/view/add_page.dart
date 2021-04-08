@@ -19,18 +19,7 @@ class AddPage extends StatelessWidget {
           onPressed: () {
             //acessa o controlador ContactController e executa a função
             //addData()
-            if (_contactController.image.isEmpty) {
-              Get.defaultDialog(
-                  titleStyle: TextStyle(color: Colors.white),
-                  title: 'Imagem Obrigatória',
-                  content: Text(
-                    'A foto do contato é obrigatória',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.red[200]);
-            } else {
-              _contactController.addData();
-            }
+            _contactController.addData();
           },
           child: Icon(Icons.save)),
       body: SingleChildScrollView(
@@ -42,7 +31,6 @@ class AddPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 TextFormField(
-                  textInputAction: TextInputAction.next,
                   controller: _contactController.nomeContactController,
                   decoration: InputDecoration(hintText: "Enter your name"),
                   autofocus: true,
@@ -54,7 +42,6 @@ class AddPage extends StatelessWidget {
                   },
                 ),
                 TextFormField(
-                  textInputAction: TextInputAction.next,
                   controller: _contactController.descricaoContactController,
                   decoration: InputDecoration(
                       hintText: "Enter your personal description"),
@@ -66,7 +53,6 @@ class AddPage extends StatelessWidget {
                   },
                 ),
                 TextFormField(
-                  textInputAction: TextInputAction.next,
                   controller: _contactController.emailContactController,
                   decoration: InputDecoration(hintText: "Enter your e-mail"),
                   autovalidateMode: AutovalidateMode.onUserInteraction,

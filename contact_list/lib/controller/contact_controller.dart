@@ -1,16 +1,16 @@
 import 'dart:io';
 
+import 'package:permission_handler/permission_handler.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:contactlist/database/database_fetch.dart';
 import 'package:contactlist/model/contact_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:simple_vcard_parser/simple_vcard_parser.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:simple_vcard_parser/simple_vcard_parser.dart';
 
 class ContactController extends GetxController {
   //ContactModel é uma lista observável, quando sofrer atualizações
@@ -19,17 +19,17 @@ class ContactController extends GetxController {
       .obs; //.obs é responsável por informar ao Getx que a variável é observável e toda vez que ele sofrer alterações, deve ser comunicado os componentes que estão dentro do Obx()
   //declaração dos controladores de textos do formulário
   TextEditingController nomeContactController =
-      TextEditingController(text: 'teste');
+      TextEditingController(text: 'Gabriel Rodrigo');
   TextEditingController descricaoContactController =
-      TextEditingController(text: 'teste');
+      TextEditingController(text: 'Mobile developer');
   TextEditingController emailContactController =
-      TextEditingController(text: 'adriel16smo@gmail.com');
+      TextEditingController(text: 'gabriel@actsistemas.com.br');
   TextEditingController telefoneContactController =
-      TextEditingController(text: '49991509589');
-  TextEditingController latitudeContactController = TextEditingController();
-  TextEditingController longitudeContactController = TextEditingController();
+      TextEditingController(text: '4936214859');
   TextEditingController siteContactController =
       TextEditingController(text: 'https://actsistemas.com');
+  TextEditingController latitudeContactController = TextEditingController();
+  TextEditingController longitudeContactController = TextEditingController();
 
   GlobalKey<FormState> form = GlobalKey<FormState>();
 
@@ -81,18 +81,23 @@ class ContactController extends GetxController {
 
   void addData() async {
     if (form.currentState.validate()) {
+      if (image.value.isEmpty) {
+        Get.snackbar('Aviso', 'Tire uma foto para seu contato');
+        return;
+      }
+
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-
+      //grava na base de dados
       latitudeContactController.text = position.latitude.toString();
       longitudeContactController.text = position.longitude.toString();
       saveData();
+      //fecha o formulário de cadastro
       Get.back();
     }
   }
 
-  saveData() async {
-    //grava na base de dados
+  void saveData() async {
     var lastId = await DatabaseHelper.instance.insert(ContactModel(
       nome: nomeContactController.text,
       descricao: descricaoContactController.text,
@@ -100,19 +105,25 @@ class ContactController extends GetxController {
       telefone: telefoneContactController.text,
       email: emailContactController.text,
       foto: image.value,
+      latitude: latitudeContactController.text,
+      longitude: longitudeContactController.text,
     ));
     //insere os dados na lista atual que é exibida em tela
     //evitando o reload da tabela
     contactModel.insert(
-        0,
-        ContactModel(
-            id: lastId,
-            nome: nomeContactController.text,
-            descricao: descricaoContactController.text,
-            site: siteContactController.text,
-            telefone: telefoneContactController.text,
-            email: emailContactController.text,
-            foto: image.value));
+      0,
+      ContactModel(
+        id: lastId,
+        nome: nomeContactController.text,
+        descricao: descricaoContactController.text,
+        site: siteContactController.text,
+        telefone: telefoneContactController.text,
+        email: emailContactController.text,
+        foto: image.value,
+        latitude: latitudeContactController.text,
+        longitude: longitudeContactController.text,
+      ),
+    );
     //limpa os campos do formulário
     nomeContactController.clear();
     descricaoContactController.clear();
@@ -120,7 +131,23 @@ class ContactController extends GetxController {
     telefoneContactController.clear();
     siteContactController.clear();
     image.value = '';
-    //fecha o formulário de cadastro
+  }
+
+  editarContact(id, contact) async {
+    await DatabaseHelper.instance.update(
+      id,
+      ContactModel(
+        id: id,
+        nome: 'nomeContactController.text',
+        descricao: 'descricaoContactController.text',
+        site: 'siteContactController.text',
+        telefone: 'telefoneContactController.text',
+        email: 'emailContactController.text',
+        foto: image.value,
+        latitude: 'latitudeContactController.text',
+        longitude: 'longitudeContactController.text',
+      ),
+    );
   }
 
   //recebe como parâmetro o id do registro no db e o caminho da foto, assim não precisa buscar o registro para resgatar o caminho da foto:
@@ -141,7 +168,10 @@ class ContactController extends GetxController {
         //remove os dados na lista atual que é exibida em tela
         //evitando o reload da tabela
         contactModel.removeWhere((element) => element.id == id);
-        await File(foto).delete(); //deleta o arquivo recebido por parâmetro
+        if (foto != "") {
+          //só remove um arquivo se existir imagem, pois pode ter sido importado contato via qrCode que não possui imagem.
+          await File(foto).delete(); //deleta o arquivo recebido por parâmetro
+        }
         Get.back(); //fecha o pop-up
       },
       onCancel: () => Get
@@ -149,10 +179,10 @@ class ContactController extends GetxController {
     );
   }
 
-  launchURL(url) async =>
+  void launchURL(url) async =>
       await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
 
-  shareOnWhatsapp(msg) async =>
+  void shareOnWhatsapp(msg) async =>
       await FlutterShareMe().shareToWhatsApp(msg: msg);
 
   Future scan() async {
@@ -168,6 +198,7 @@ class ContactController extends GetxController {
     image.value = '';
     latitudeContactController.text = '';
     longitudeContactController.text = '';
+
     saveData();
   }
 }
