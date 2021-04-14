@@ -1,13 +1,13 @@
-import 'package:flutter_listagem/migration.dart';
+import 'package:flutter_listagem/models/compras.dart';
 import 'package:flutter_listagem/models/usuario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-import '../models/carinhoDeCompra.dart';
+import '../Migration.dart';
 
 class DBProvider {
   static final DBProvider db = DBProvider();
   Database _database;
+
   Future<Database> get database async {
     if (_database != null) return _database;
     _database = await initDB();
@@ -15,24 +15,25 @@ class DBProvider {
   }
 
   initDB() async {
-    return await openDatabase(
-      join(await getDatabasesPath(), 'compraae.db'),
-      version: 1,
-      onCreate: (db, version) {
-        Migration.migration.getAllSricpt().forEach((element) {
-          db.execute(element);
+    return await openDatabase(join(await getDatabasesPath(), 'compraae.db'),
+        onCreate: (db, version) {
+      Migration.migration.getAllScript().forEach((x) {
+        db.execute(x);
+      });
+    }, onUpgrade: (db, oldVersion, newVersion) {
+      for (int i = oldVersion + 1; i <= newVersion; i++) {
+        Migration.migration.getScript(i).forEach((x) {
+          db.execute(x);
         });
-      },
-      onUpgrade: (db, oldVersion, newVersion) {
-        for (var i = oldVersion + 1; i <= newVersion; i++) {
-          Migration.migration.getScript(i).forEach((element) {
-            db.execute(element);
-          });
-        }
-        // db.execute(
-        //     "create table tb_carrinhoCompras(id integer primary key, tx_nome, tx_data,int_codigoDoUsuario)");
-      },
-    );
+      }
+    }, version: 9);
+  }
+
+  Future<int> salvarCompra(Compras compras,
+      {String data, String nomeProduto, int idUsuario}) async {
+    Database db = await database;
+    return await db.insert("tb_compras", compras.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> salvar(Usuario usuario) async {
@@ -41,15 +42,40 @@ class DBProvider {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<void> salvarCarrinho(CarrinhoDeCompras carrinhoDeCompras) async {
-    Database db = await database;
-    await db.insert("tb_carrinhoCompras", carrinhoDeCompras.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
   Future<void> delete(int id) async {
     Database db = await database;
     await db.delete("tb_usuario", where: "id =?", whereArgs: [id]);
+  }
+
+  Future<void> deleteCompras(int id) async {
+    Database db = await database;
+    await db.delete("tb_compras", where: "id =?", whereArgs: [id]);
+  }
+
+  Future<List<Compras>> getAllCompras() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query('tb_compras');
+    List<Compras> compras = List.generate(maps.length, (i) {
+      return Compras(
+          id: maps[i]['id'],
+          nomeProduto: maps[i]['tx_nomeProduto'],
+          data: maps[i]['tx_data'],
+          idUsuario: maps[i]["id_usuario"]);
+    });
+    return compras;
+  }
+
+  Future<List<Usuario>> getAll() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query('tb_usuario');
+    List<Usuario> users = List.generate(maps.length, (i) {
+      return Usuario(
+          id: maps[i]['id'],
+          nome: maps[i]['tx_nome'],
+          login: maps[i]['tx_login'],
+          senha: maps[i]["tx_senha"]);
+    });
+    return users;
   }
 
   Future<Usuario> getById(int id) async {
@@ -90,26 +116,5 @@ class DBProvider {
       return users[0];
     }
     return null;
-  }
-
-  Future<List<CarrinhoDeCompras>> getAllCarrinho() async {
-    Database db = await database;
-
-    List<Map<String, dynamic>> maps = await db.query('tb_carrinhoCompras');
-    print('${maps.first}');
-    List<CarrinhoDeCompras> carrinho;
-    if (maps.length < 0) {
-      carrinho = [];
-    } else {
-      carrinho = List.generate(
-          maps.length,
-          (i) => CarrinhoDeCompras(
-              id: maps[i]['id'],
-              nome: maps[i]['tx_nome'],
-              data: maps[i]['tx_data'],
-              codigoDoUsuario: maps[i]["int_codigoDoUsuario"]));
-    }
-
-    return carrinho;
   }
 }
