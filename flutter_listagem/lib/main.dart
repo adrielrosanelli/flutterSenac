@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_listagem/models/RetornoAutentificacao.dart';
 import 'package:flutter_listagem/service/DBProvider.dart';
+import 'package:flutter_listagem/service/request.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'HomePage.dart';
+import 'models/autentificacao.dart';
 import 'models/usuario.dart';
 
 void main() {
@@ -38,22 +41,32 @@ class _MyHomePageState extends State<MyHomePage> {
   final senhaController = TextEditingController();
 
   login({BuildContext context}) async {
-    Usuario userSalvo = await DBProvider.db.getByUsuarioSenha(
-        login: loginController.text, senha: senhaController.text);
-    if (loginController.text.isNotEmpty) {
+    RetornoAutenticacao retorno = await Request.request.validaLogin(
+        Autenticacao(senha: senhaController.text, login: loginController.text));
+    if (retorno != null) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage(usuario: userSalvo)));
+              builder: (context) => HomePage(retornoAutenticacao: retorno)));
+      print('login');
     } else {
-      Fluttertoast.showToast(
-          msg: 'Usúario ou senha invalidos',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER);
+      print(senhaController.text + loginController.text);
+      print('not login');
     }
 
-    print('Id salvo : ' + userSalvo.login);
-    print('Login : ${loginController.text} senha: ${senhaController.text}');
+    // Usuario userSalvo = await DBProvider.db.getByUsuarioSenha(
+    //     login: loginController.text, senha: senhaController.text);
+    // if (loginController.text.isNotEmpty) {
+
+    // } else {
+    //   Fluttertoast.showToast(
+    //       msg: 'Usúario ou senha invalidos',
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.CENTER);
+    // }
+
+    // print('Id salvo : ' + userSalvo.login);
+    // print('Login : ${loginController.text} senha: ${senhaController.text}');
   }
 
   @override

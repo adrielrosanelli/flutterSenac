@@ -4,25 +4,28 @@ import 'package:flutter_listagem/Contato.dart';
 import 'package:flutter_listagem/HomePage.dart';
 import 'package:flutter_listagem/models/compras.dart';
 import 'package:flutter_listagem/service/DBProvider.dart';
+import 'package:flutter_listagem/service/request.dart';
+import 'models/carrinho.dart';
 import 'models/usuario.dart';
 
 class Cadastro extends StatefulWidget {
-  final Usuario usuario;
+  final int codigoUsuario;
   final Compras compras;
 
-  Cadastro({Key key, @required this.usuario, @required this.compras})
+  Cadastro({Key key, @required this.codigoUsuario, @required this.compras})
       : super(key: key);
 
   @override
   _CadastroState createState() =>
-      _CadastroState(usuario: usuario, compras: compras);
+      _CadastroState(codigoUsuario: codigoUsuario, compras: compras);
 }
 
 class _CadastroState extends State<Cadastro> {
-  final Usuario usuario;
+  final int codigoUsuario;
   final Compras compras;
 
-  _CadastroState({Key key, @required this.usuario, @required this.compras});
+  _CadastroState(
+      {Key key, @required this.codigoUsuario, @required this.compras});
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController _nomeCadastroController = TextEditingController();
   TextEditingController _dataCadastroController = TextEditingController();
@@ -30,22 +33,18 @@ class _CadastroState extends State<Cadastro> {
   salvarCompras({
     BuildContext context,
   }) async {
-    Compras comprasSalvar = compras;
-    if (comprasSalvar == null) {
-      comprasSalvar = Compras(
-          data: _dataCadastroController.text,
-          nomeProduto: _nomeCadastroController.text,
-          idUsuario: usuario.id);
-    } else {
-      comprasSalvar.nomeProduto = _nomeCadastroController.text;
-      comprasSalvar.data = _dataCadastroController.text;
-    }
+    Carrinho carrinho = Carrinho(
+        codigoUsuario: codigoUsuario,
+        nome: _nomeCadastroController.text,
+        data: _dataCadastroController.text);
 
-    int query = await DBProvider.db.salvarCompra(comprasSalvar);
-    if (query > 0) {
-      print('inseriu com sucesso');
+    Carrinho carrinhoSalvar = await Request.request.salvarCompras(carrinho);
+    if (carrinhoSalvar != null) {
+      print("salvo com sucesso");
+      Navigator.pop(context);
+    } else {
+      print('falhou');
     }
-    Navigator.pop(context);
   }
 
   @override
