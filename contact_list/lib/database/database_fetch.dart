@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 
 class DatabaseHelper {
   static final _databaseName = "contacts.db";
-  static final _databaseVersion = 3;
+  static final _databaseVersion = 6;
 
   static final table = "contacts";
 
@@ -67,16 +67,6 @@ class DatabaseHelper {
     return res;
   }
 
-  update(int id, ContactModel contact) async {
-    //aguarda a instância do banco ser acessível.
-    Database db = await instance.database;
-    await db.update(table, contact.toMap());
-    //insere os dados no banco de dados conforme o mapa de campos da
-    //classe/model ContactModel
-    // var res = await db.insert(table, contact.toMap());
-    // return res;
-  }
-
   //retorna os registros da tabela ordenado por ID
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     Database db = await instance.database;
@@ -88,5 +78,17 @@ class DatabaseHelper {
   Future<int> delete(int id) async {
     Database db = await instance.database;
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  //atualiza um registro na tabela
+  Future<int> update(int id, ContactModel contact) async {
+    //aguarda a instância do banco ser acessível.
+    Database db = await instance.database;
+    return await db.update(
+      table,
+      contact.toMap(),
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
   }
 }

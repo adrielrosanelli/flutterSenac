@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:contactlist/controller/contact_controller.dart';
 import 'package:contactlist/model/contact_model.dart';
-import 'package:contactlist/view/add_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,21 +13,21 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: Text("Contact list"),
+        title: Text('titleList'.tr),
         actions: [
           TextButton(
             child: Icon(
               Icons.qr_code,
               color: Colors.white,
             ),
-            onPressed: () => _contactController.scan(),
+            onPressed: () => _contactController.scanQRCodeAction(),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             //abre a página do formulário
-            Get.to(AddPage());
+            _contactController.addContactForm();
           },
           child: Icon(Icons.add)),
       body: Padding(
@@ -42,30 +40,38 @@ class HomePage extends StatelessWidget {
               //Obx() é o responsável por atualizar o listView
               //toda vez que ouver uma mudança nas variáveis observáveis
               //no caso:  var ContactModel = List<ContactModel>().obs;
-              child: Obx(() => _contactController.contactModel.length < 1
-                  ? Text('Nenhum contato adicionado em sua lista!')
+              child: Obx(() => _contactController.listOfContacts.length < 1
+                  ? Text('emptyList'.tr)
                   : ListView.builder(
-                      itemCount: _contactController.contactModel.length,
+                      itemCount: _contactController.listOfContacts.length,
                       itemBuilder: (context, index) => Card(
                         child: ListTile(
-                          leading: Expanded(
-                              flex: 1,
-                              child: //exibe a imagem, se existir
-                                  _contactController.contactModel[index].foto !=
-                                          ""
-                                      ? Image.file(File(_contactController
-                                          .contactModel[index].foto))
-                                      : Image.asset('assets/contato.png')),
-                          title:
-                              Text(_contactController.contactModel[index].nome),
+                          leading: //exibe a imagem, se existir
+                              _contactController.listOfContacts[index].foto !=
+                                      ""
+                                  ? CircleAvatar(
+                                      backgroundColor: Colors.red,
+                                      child: CircleAvatar(
+                                        backgroundImage: Image.file(
+                                          File(_contactController
+                                              .listOfContacts[index].foto),
+                                          fit: BoxFit.cover,
+                                        ).image,
+                                      ),
+                                    )
+                                  : Image.asset('assets/contato.png'),
+                          title: Text(
+                              _contactController.listOfContacts[index].nome),
                           subtitle: Text(
-                            _contactController.contactModel[index].descricao,
+                            _contactController.listOfContacts[index].descricao,
                           ),
                           trailing: IconButton(
-                              icon: FaIcon(FontAwesomeIcons.addressBook),
-                              onPressed: () => (bottomMenu(_contactController
-                                      .contactModel[
-                                  index]))), //passando os dois parâmetros para a função de exclusão
+                            icon: FaIcon(FontAwesomeIcons.addressBook),
+                            onPressed: () => (bottomMenu(
+                              _contactController.listOfContacts[index],
+                              index,
+                            )),
+                          ), //passando os dois parâmetros para a função de exclusão
                         ),
                       ),
                     )),
@@ -77,7 +83,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-bottomMenu(ContactModel contact) {
+bottomMenu(ContactModel contact, int index) {
   Get.bottomSheet(
     SingleChildScrollView(
       child: Column(
@@ -103,7 +109,7 @@ bottomMenu(ContactModel contact) {
               ? optionMenu(
                   contact.id,
                   FaIcon(FontAwesomeIcons.phone),
-                  'Call on phone',
+                  'menuCallOnPhone'.tr,
                   'tel:' + contact.telefone,
                 )
               : Container(),
@@ -111,7 +117,7 @@ bottomMenu(ContactModel contact) {
               ? optionMenu(
                   contact.id,
                   FaIcon(FontAwesomeIcons.envelope),
-                  'Write a e-mail',
+                  'menuWriteEmail'.tr,
                   'mailto:' + contact.email,
                 )
               : Container(),
@@ -119,7 +125,7 @@ bottomMenu(ContactModel contact) {
               ? optionMenu(
                   contact.id,
                   FaIcon(FontAwesomeIcons.whatsapp),
-                  'Share on Whastsapp',
+                  'menuShareOnWhatsapp'.tr,
                   'whats',
                   whatsMessage: 'Olá ' + contact.nome,
                 )
@@ -128,27 +134,38 @@ bottomMenu(ContactModel contact) {
               ? optionMenu(
                   contact.id,
                   FaIcon(FontAwesomeIcons.globe),
-                  'Open website',
+                  'menuOpenWebsite'.tr,
                   contact.site,
                 )
               : Container(),
           contact.id != null
               ? optionMenu(
                   contact.id,
-                  FaIcon(FontAwesomeIcons.eraser, color: Colors.white),
-                  'Apagar contato',
-                  'delete',
-                  foto: contact.foto,
+                  FaIcon(FontAwesomeIcons.edit),
+                  'menuUpdateContact'.tr,
+                  'edit',
+                  fullContact: contact,
+                  index: index,
                 )
               : Container(),
           contact.id != null
               ? optionMenu(
                   contact.id,
-                  FaIcon(FontAwesomeIcons.edit, color: Colors.white),
-                  'Editar contato',
-                  'editar',
+                  FaIcon(FontAwesomeIcons.eye),
+                  'menuReadContact'.tr,
+                  'read',
+                  fullContact: contact,
+                )
+              : Container(),
+          contact.id != null
+              ? optionMenu(
+                  contact.id,
+                  FaIcon(FontAwesomeIcons.eraser, color: Colors.white),
+                  'menuDeleteContact'.tr,
+                  'delete',
                   foto: contact.foto,
-                  contact: contact)
+                  index: index,
+                )
               : Container(),
         ],
       ),
@@ -158,7 +175,7 @@ bottomMenu(ContactModel contact) {
 }
 
 optionMenu(int id, Widget icon, String title, String action,
-    {String foto, String whatsMessage, ContactModel contact}) {
+    {String foto, String whatsMessage, ContactModel fullContact, int index}) {
   final ContactController _contactController = Get.put(ContactController());
   if (action == null) {
     return;
@@ -175,12 +192,14 @@ optionMenu(int id, Widget icon, String title, String action,
     ),
     onTap: () => {
       Get.back(),
-      if (action == 'delete')
-        {_contactController.deleteContact(id, foto)}
+      if (action == 'edit')
+        {_contactController.editContactForm(fullContact, index)}
+      else if (action == 'read')
+        {_contactController.readContactPage(fullContact)}
+      else if (action == 'delete')
+        {_contactController.deleteContactAction(id, foto, index)}
       else if (action == 'whats')
         {_contactController.shareOnWhatsapp(whatsMessage)}
-      else if (action == 'editar')
-        {_contactController.editarContact(id, contact)}
       else if (action != null)
         {
           _contactController.launchURL(action),

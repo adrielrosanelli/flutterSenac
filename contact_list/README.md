@@ -1,7 +1,7 @@
 ### Lista de contatos com Flutter em base de dados local
-**Instrutores:**<br />
+**Instrutor:**<br />
 Gabriel Rodrigo Desbesell <br />
-Rafael Chieli<br /><br />
+<br />
 
 Projeto desenvolvido com os alunos do curso de programação para internet do SENAC SC:
 
@@ -21,7 +21,7 @@ Projeto desenvolvido com os alunos do curso de programação para internet do SE
     - [x] Remover o botão excluir da Lista;
     - [x] Adicionar menu inferior ao clicar no contato;               
         - [x] Utilizar ícones do FontAwesome;
-        - [ ] Adicionar opção de alteração do contato;
+        - [x] Adicionar opção de alteração do contato;
         - [x] Permitir abrir o link(se cadastrado) do contato no navegador de internet;
         - [x] Abrir compartilhar o contato por WhatsApp;
         - [x] Abrir o telefone no discador;
@@ -29,18 +29,19 @@ Projeto desenvolvido com os alunos do curso de programação para internet do SE
         - [x] Permitir excluir o contato;
             - [x] Adicionar confirmação de exclusão;
             - [x] Remover a foto do dispositivo;
-        - [ ] Adicionar opção de visualização completa do contato:
-            - [ ] Exibir todos os dados, foto e QRCode do tipo VCard;
+        - [x] Adicionar opção de visualização completa do contato:
+            - [x] Exibir todos os dados, foto e QRCode do tipo VCard;
         - [x] Exibir opção de ver no mapa a localização do contato(se disponível);
-- [ ] Adicionar opção no AppBar de leitura de QRCode do tipo VCard e importação do contato para a base de dados;
-- [ ] Adicionar pelo menos dois idiomas ao app;
-- [ ] Adicionar Splash Screen personalizado ao app;
-- [ ] Exibir a versão atual do APP na Splash Screen;
-- [ ] Atualizar o ícone do aplicativo;
-- [ ] Modificar o título do aplicativo;
+- [x] Adicionar opção no AppBar de leitura de QRCode do tipo VCard e importação do contato para a base de dados;
+- [x] Adicionar idiomas(PT e EN) ao app;
+- [x] Adicionar Splash Screen personalizado ao app;
+- [x] Exibir a versão atual do APP na Splash Screen;
+- [x] Atualizar o ícone do aplicativo(https://www.digitalocean.com/community/tutorials/flutter-app-icons);
+- [x] Modificar o título do aplicativo;
 
 **Corrigir bugs**
 - [x] Ao adicionar um contato e apagar ele na sequência não é removido da base de dados, apenas da tela;
+- [x] Falha ao exibir o item da lista em modo release(quebrando layout da lista);
   
 
 **Pacotes utilizados no projeto:**
@@ -48,16 +49,19 @@ https://pub.dev/packages/get
 https://pub.dev/packages/sqflite
 https://pub.dev/packages/image_picker
 https://pub.dev/packages/url_launcher
-https://pub.dev/packages/modal_bottom_sheet
-https://pub.dev/packages/location or https://pub.dev/packages/geolocator
+https://pub.dev/packages/geolocator
 https://pub.dev/packages/qrscan
-https://pub.dev/packages/barcode_generator
 https://pub.dev/packages/font_awesome_flutter
 https://pub.dev/packages/splashscreen
 https://pub.dev/packages/package_info
 https://pub.dev/packages/flutter_share_me
 https://pub.flutter-io.cn/packages/simple_vcard_parser/
 https://pub.dev/packages/permission_handler
+https://pub.dev/packages/validators/versions
+https://pub.dev/packages/intl
+https://pub.dev/packages/qr_flutter
+https://pub.dev/packages/vcard
+https://pub.dev/packages/splashscreen
 
 **Créditos ao projeto original:**
 https://github.com/aadarshchhetry/sqlTodoApp
