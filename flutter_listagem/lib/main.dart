@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_listagem/models/RetornoAutentificacao.dart';
 import 'package:flutter_listagem/service/DBProvider.dart';
-import 'package:flutter_listagem/service/request.dart';
+import 'package:flutter_listagem/service/Request.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'HomePage.dart';
-import 'models/autentificacao.dart';
+import 'models/Autenticacao.dart';
+import 'models/RetornoAutenticacao.dart';
 import 'models/usuario.dart';
 
 void main() {
@@ -41,32 +41,18 @@ class _MyHomePageState extends State<MyHomePage> {
   final senhaController = TextEditingController();
 
   login({BuildContext context}) async {
-    RetornoAutenticacao retorno = await Request.request.validaLogin(
-        Autenticacao(senha: senhaController.text, login: loginController.text));
-    if (retorno != null) {
+
+    RetornoAutenticacao retorno = await Request.request.validarLogin(
+        Autenticacao(senha:senhaController.text,login:loginController.text  ));
+
+    if(retorno!=null){
+
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage(retornoAutenticacao: retorno)));
-      print('login');
-    } else {
-      print(senhaController.text + loginController.text);
-      print('not login');
+              builder: (context) => HomePage(retornoAtenticacao: retorno)));
     }
 
-    // Usuario userSalvo = await DBProvider.db.getByUsuarioSenha(
-    //     login: loginController.text, senha: senhaController.text);
-    // if (loginController.text.isNotEmpty) {
-
-    // } else {
-    //   Fluttertoast.showToast(
-    //       msg: 'Usúario ou senha invalidos',
-    //       toastLength: Toast.LENGTH_SHORT,
-    //       gravity: ToastGravity.CENTER);
-    // }
-
-    // print('Id salvo : ' + userSalvo.login);
-    // print('Login : ${loginController.text} senha: ${senhaController.text}');
   }
 
   @override

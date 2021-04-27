@@ -1,45 +1,33 @@
-import 'dart:convert';
+import "dart:convert";
 
 class Carrinho {
   int id;
   int codigoUsuario;
-  String data;
   String nome;
+  String data;
 
-  Carrinho({
-    this.id,
-    this.codigoUsuario,
-    this.data,
-    this.nome,
-  });
+
+  Carrinho({this.id, this.codigoUsuario,this.nome,this.data});
 
   factory Carrinho.fromMap(Map<String, dynamic> json) => new Carrinho(
-        id: json["id"],
-        codigoUsuario: json["codigoUsuario"],
-        data: json["data"],
-        nome: json["nome"],
-      );
+      id: json['id'],
+      codigoUsuario: json['codigoUsuario'],
+      nome: json['nome'],
+      data: json['data']);
 
   Map<String, dynamic> toMap() => {
-        "id": id,
-        "codigoUsuario": codigoUsuario,
-        "data": data,
-        "nome": nome,
-      };
-
+    'id': id,
+    'codigoUsuario': codigoUsuario,
+    'nome': nome,
+    'data': data
+  };
   Carrinho clientFromJson(String value) {
     final jsonData = json.decode(value);
     return Carrinho.fromMap(jsonData);
   }
 
-  String toJson(Carrinho autenticacao) {
-    final data = autenticacao.toMap();
+  String clientToJson(Carrinho carrinho) {
+    final data = carrinho.toMap();
     return json.encode(data);
   }
-
-  // Autenticacao.fromJson(Map<String, dynamic> json) {
-  //   login = json['login'];
-  //   senha = json['senha'];
-  // }
-
 }

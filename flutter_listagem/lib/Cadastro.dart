@@ -2,15 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_listagem/Contato.dart';
 import 'package:flutter_listagem/HomePage.dart';
+import 'package:flutter_listagem/models/Carrinho.dart';
 import 'package:flutter_listagem/models/compras.dart';
 import 'package:flutter_listagem/service/DBProvider.dart';
-import 'package:flutter_listagem/service/request.dart';
-import 'models/carrinho.dart';
+import 'package:flutter_listagem/service/Request.dart';
 import 'models/usuario.dart';
 
 class Cadastro extends StatefulWidget {
   final int codigoUsuario;
-  final Compras compras;
+  final Carrinho compras;
 
   Cadastro({Key key, @required this.codigoUsuario, @required this.compras})
       : super(key: key);
@@ -22,7 +22,7 @@ class Cadastro extends StatefulWidget {
 
 class _CadastroState extends State<Cadastro> {
   final int codigoUsuario;
-  final Compras compras;
+  final Carrinho compras;
 
   _CadastroState(
       {Key key, @required this.codigoUsuario, @required this.compras});
@@ -37,10 +37,17 @@ class _CadastroState extends State<Cadastro> {
         codigoUsuario: codigoUsuario,
         nome: _nomeCadastroController.text,
         data: _dataCadastroController.text);
+    Carrinho carrinhoSalvo;
+    if (compras != null) {
+      carrinho.id = compras.id;
+      carrinhoSalvo = await Request.request.editarCompras(carrinho);
+    } else {
+      carrinhoSalvo = await Request.request.salvarCompras(carrinho);
+    }
 
-    Carrinho carrinhoSalvar = await Request.request.salvarCompras(carrinho);
-    if (carrinhoSalvar != null) {
-      print("salvo com sucesso");
+    carrinhoSalvo = await Request.request.salvarCompras(carrinho);
+    if (carrinhoSalvo != null) {
+      print('inseriu com sucesso');
       Navigator.pop(context);
     } else {
       print('falhou');
@@ -49,7 +56,7 @@ class _CadastroState extends State<Cadastro> {
 
   @override
   Widget build(BuildContext context) {
-    _nomeCadastroController.text = compras == null ? '' : compras.nomeProduto;
+    _nomeCadastroController.text = compras == null ? '' : compras.nome;
     _dataCadastroController.text = compras?.data;
     return Scaffold(
       appBar: AppBar(

@@ -12,9 +12,11 @@ class _ContatoState extends State<Contato> {
       appBar: AppBar(
         title: Text('Contato'),
       ),
-      body: Column(
-        children: [],
-      ),
+      body:
+           Column(
+            children: [
+            ],
+          ),
     );
   }
 }
