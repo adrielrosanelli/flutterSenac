@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'home.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -84,7 +87,9 @@ class Login extends StatelessWidget {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: Colors.brown[300]),
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(Home());
+                    },
                     child: Text('Entrar'),
                   ),
                 ],
