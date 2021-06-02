@@ -100,14 +100,12 @@ class AddPage extends StatelessWidget {
                   controller: _contactController.telefoneContactController,
                   decoration:
                       InputDecoration(hintText: "Enter your cell phone"),
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.number,
                   //ao clicar no Enter do teclado, fecha o teclado.
                   textInputAction: TextInputAction.done,
                   validator: (value) {
                     if (value.isNotEmpty) {
-                      return (!GetUtils.isPhoneNumber(value))
-                          ? "Phone is not valid"
-                          : null;
+                      return "Phone is not valid";
                     }
                     return null;
                   },

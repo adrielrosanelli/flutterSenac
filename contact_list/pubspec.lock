@@ -156,6 +156,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  qrcode_reader:
+    dependency: "direct main"
+    description:
+      name: qrcode_reader
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.4"
   sky_engine:
     dependency: transitive
     description: flutter
