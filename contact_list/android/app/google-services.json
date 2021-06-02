@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "497600584220",
+    "project_id": "testeador-eee76",
+    "storage_bucket": "testeador-eee76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497600584220:android:1844fae2658fc08ebf1dd9",
+        "android_client_info": {
+          "package_name": "com.example.contactlist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497600584220-14t1aveaq0j7selj2onmgpvu697drrhg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtTm0ftPAcopRzk8GUDon-64txkDpxyI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497600584220-14t1aveaq0j7selj2onmgpvu697drrhg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

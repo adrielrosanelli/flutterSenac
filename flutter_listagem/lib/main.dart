@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_listagem/models/usuario.dart';
 import 'package:flutter_listagem/service/DBProvider.dart';
+import 'package:flutter_listagem/service/Request.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'home.dart';
+import 'HomePage.dart';
+import 'models/Autenticacao.dart';
+import 'models/RetornoAutenticacao.dart';
+import 'models/usuario.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,33 +39,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final loginController = TextEditingController();
   final senhaController = TextEditingController();
-  login({BuildContext context}) async {
-    Usuario usuario = Usuario(
-        nome: loginController.text,
-        senha: senhaController.text,
-        login: loginController.text);
 
-    DBProvider.db.salvar(usuario);
-    print('passou');
-    Usuario userSalvo = await DBProvider.db.getByUsuarioSenha(
-        login: loginController.text, senha: senhaController.text);
-    print('Id salvo : ' + userSalvo.login);
-    print('Login : ${loginController.text} senha: ${senhaController.text}');
-    if (userSalvo != null) {
+  login({BuildContext context}) async {
+
+    RetornoAutenticacao retorno = await Request.request.validarLogin(
+        Autenticacao(senha:senhaController.text,login:loginController.text  ));
+
+    if(retorno!=null){
+
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => Home(
-                    login: loginController.text,
-                    senha: senhaController.text,
-                    usuario: userSalvo,
-                  )));
-    } else {
-      Fluttertoast.showToast(
-          msg: "Login ou senha Inválido(s)",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM);
+              builder: (context) => HomePage(retornoAtenticacao: retorno)));
     }
+
   }
 
   @override
@@ -104,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
+                // ignore: deprecated_member_use
                 child: RaisedButton(
                   color: Color(0xff474747),
                   onPressed: () {

@@ -13,6 +13,8 @@ class Usuario {
       login: json['login'],
       senha: json['senha']);
 
+
+
   Map<String, dynamic> toMap() =>
       {'id': id, 'tx_nome': nome, "tx_login": login, 'tx_senha': senha};
   Usuario clientFromJson(String value) {
